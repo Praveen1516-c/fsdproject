@@ -1,0 +1,6 @@
+{
+  "name": "Student Career Intelligence & Internship Portal",
+  "description": "Bridge the gap between undergraduate academic preparation and real-world hiring standards with objective fit scoring, concrete skill remediation, and database-aligned evaluation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

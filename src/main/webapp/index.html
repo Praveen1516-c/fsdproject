@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareerIntel Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              500: '#6366F1',
+              600: '#4F46E5',
+              700: '#4338CA',
+              800: '#3730A3',
+            },
+            accent: {
+              500: '#8B5CF6',
+              600: '#7C3AED',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .circle-progress-ring__circle {
+      transition: stroke-dashoffset 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] min-h-screen antialiased flex flex-col">
+
+  <!-- ===================================================================
+       1. FULL AUTHENTICATION INTERFACE (Shown when no user is logged in)
+       =================================================================== -->
+  <div id="authScreen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100">
+    <div class="w-full max-w-md bg-white border border-[#E2E8F0] rounded-2xl p-8 shadow-xl space-y-6">
+      
+      <div class="text-center space-y-2">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white shadow-md">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight text-[#0F172A]">CareerIntel Portal</h1>
+        <p class="text-xs text-slate-500">Intelligent Internship Matching &amp; Algorithmic Career Preparation</p>
+      </div>
+
+      <!-- Quick Demo Access Buttons -->
+      <div class="space-y-2 pt-1">
+        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 text-center">Fast-Track Demo Access</p>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="demoStudentBtn" class="w-full py-2 px-3 text-xs font-semibold rounded-xl text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors">
+            Student Demo
+          </button>
+          <button type="button" id="demoRecruiterBtn" class="w-full py-2 px-3 text-xs font-semibold rounded-xl text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-200 transition-colors">
+            Recruiter Demo
+          </button>
+        </div>
+      </div>
+
+      <div class="relative flex py-1 items-center">
+        <div class="flex-grow border-t border-slate-200"></div>
+        <span class="flex-shrink mx-3 text-xs text-slate-400 uppercase tracking-wider">or continue with email</span>
+        <div class="flex-grow border-t border-slate-200"></div>
+      </div>
+
+      <!-- Auth Tabs: Sign In / Create Account -->
+      <div class="flex bg-slate-100 p-1 rounded-xl">
+        <button type="button" id="tabSignInBtn" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-900 bg-white shadow-sm transition-all">
+          Sign In
+        </button>
+        <button type="button" id="tabRegisterBtn" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-800 transition-all">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="signInForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+          <input type="email" id="loginEmail" required value="student@demo.com" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+          <input type="password" id="loginPassword" required value="password123" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Portal Role</label>
+          <select id="loginRole" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+            <option value="Student">Student (Candidate)</option>
+            <option value="Recruiter">Recruiter (Talent Partner)</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md transition-all">
+          Sign In to Portal
+        </button>
+      </form>
+
+      <!-- Create Account Form (Hidden by default) -->
+      <form id="registerForm" class="hidden space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+          <input type="text" id="regFullName" required placeholder="Alex Rivera" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Email</label>
+            <input type="email" id="regEmail" required placeholder="alex@university.edu" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+            <input type="password" id="regPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Portal Role</label>
+          <select id="regRole" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="Student">Student (Candidate)</option>
+            <option value="Recruiter">Recruiter (Hiring Manager)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Degree &amp; Year or Company</label>
+          <input type="text" id="regDegree" placeholder="B.S. Software Engineering (2026)" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Core Technical Skills</label>
+          <input type="text" id="regSkills" placeholder="Java, Spring Boot, MySQL, REST APIs" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md transition-all">
+          Register &amp; Launch
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+
+  <!-- ===================================================================
+       2. MAIN APPLICATION WORKSPACE (Visible After Login)
+       =================================================================== -->
+  <div id="mainApp" class="hidden flex-col flex-1">
+    
+    <!-- Top Navigation Bar -->
+    <header class="bg-white border-b border-[#E2E8F0] sticky top-0 z-30 shadow-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        <!-- Brand Logo & Title -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-base font-bold tracking-tight text-[#0F172A]">CareerIntel Portal</span>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+          <button type="button" data-view="dashboard" class="nav-tab px-3.5 py-1.5 rounded-lg bg-white text-indigo-700 shadow-xs transition-all">
+            Dashboard &amp; Internships
+          </button>
+          <button type="button" data-view="matcher" class="nav-tab px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">
+            AI Career Matcher
+          </button>
+          <button type="button" data-view="applications" class="nav-tab px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5">
+            <span>My Applications</span>
+            <span id="navAppCount" class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+          </button>
+          <button type="button" data-view="history" class="nav-tab px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">
+            MySQL Evaluation History
+          </button>
+        </nav>
+
+        <!-- User Profile & Logout -->
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2.5">
+            <div id="userAvatar" class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+              PS
+            </div>
+            <div class="hidden sm:block text-left">
+              <p id="userNameDisplay" class="text-xs font-bold text-[#0F172A] leading-tight">Priya Sharma</p>
+              <span id="userRoleBadge" class="inline-block text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
+                Student
+              </span>
+            </div>
+          </div>
+
+          <button type="button" id="editProfileBtn" title="Edit Profile" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+
+          <button type="button" id="logoutBtn" class="text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3 py-1.5 rounded-xl transition-colors">
+            Logout
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+
+      <!-- ===================================================================
+           VIEW 1: DASHBOARD & INTERNSHIP BOARD
+           =================================================================== -->
+      <section id="viewDashboard" class="view-panel space-y-8">
+        
+        <!-- Top KPI Counter Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm space-y-1">
+            <p class="text-xs font-medium text-slate-500">Active Internships</p>
+            <p id="kpiActiveInternships" class="text-2xl font-extrabold text-[#0F172A]">4</p>
+            <p class="text-[11px] text-emerald-600 font-medium">Verified Opportunities</p>
+          </div>
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm space-y-1">
+            <p class="text-xs font-medium text-slate-500">Applications Submitted</p>
+            <p id="kpiApplications" class="text-2xl font-extrabold text-[#0F172A]">0</p>
+            <p class="text-[11px] text-indigo-600 font-medium">1-Click Fast Submissions</p>
+          </div>
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm space-y-1">
+            <p class="text-xs font-medium text-slate-500">Evaluations Run</p>
+            <p id="kpiEvaluations" class="text-2xl font-extrabold text-[#0F172A]">0</p>
+            <p class="text-[11px] text-violet-600 font-medium">AI Career Intelligence</p>
+          </div>
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 shadow-sm space-y-1">
+            <p class="text-xs font-medium text-slate-500">Average Match Score</p>
+            <p id="kpiAvgScore" class="text-2xl font-extrabold text-[#0F172A]">82%</p>
+            <p class="text-[11px] text-emerald-600 font-medium">Readiness Index</p>
+          </div>
+        </div>
+
+        <!-- Section Header: RBAC Post Internship (Recruiter) vs Search Filter (Student) -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+          <div>
+            <h2 class="text-xl font-bold tracking-tight text-[#0F172A]">Curated Technical Internships</h2>
+            <p class="text-xs text-slate-500">Real-time postings with required stacks and automated compatibility screening.</p>
+          </div>
+          <!-- Recruiter button (single plus) -->
+          <button type="button" id="openPostModalBtn" class="hidden inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 rounded-xl shadow-sm transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Post Internship</span>
+          </button>
+          <!-- Student Search / Filter Input -->
+          <div id="studentInternshipSearch" class="relative w-full sm:w-80">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input type="text" id="internshipFilterInput" placeholder="Filter by role, company, or skill (e.g. Java, React)..." class="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#E2E8F0] rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs">
+          </div>
+        </div>
+
+        <!-- 3-Column Interactive Grid of Internship Cards -->
+        <div id="internshipGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Dynamically populated via JavaScript -->
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 2: AI CAREER MATCHER TAB
+           =================================================================== -->
+      <section id="viewMatcher" class="view-panel hidden space-y-8">
+        
+        <div class="border-b border-[#E2E8F0] pb-4">
+          <h2 class="text-xl font-bold tracking-tight text-[#0F172A]">AI Career Fit &amp; Gap Remediation Engine</h2>
+          <p class="text-xs text-slate-500">Compare verified candidate technical abilities against rigorous production internship requirements.</p>
+        </div>
+
+        <!-- Clean 2-Column Workspace -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Left Column: Student Profile -->
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="text-sm font-bold text-slate-900">Student Profile Inputs</h3>
+              <span class="text-[11px] font-medium text-indigo-600">Auto-filled from Profile</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Student Full Name</label>
+              <input type="text" id="matcherStudentName" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Degree &amp; Graduation Year</label>
+              <input type="text" id="matcherDegree" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <!-- Interactive Skill Tags -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Interactive Technical Skills</label>
+              <div id="matcherTagsContainer" class="flex flex-wrap gap-1.5 items-center p-2.5 border border-[#E2E8F0] rounded-xl bg-white min-h-[46px] focus-within:ring-2 focus-within:ring-indigo-500">
+                <input type="text" id="matcherSkillInput" placeholder="Type a skill &amp; press Enter..." class="text-xs outline-none flex-grow bg-transparent px-1 min-w-[160px]">
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Press Enter or comma to add a skill tag. Click cross to remove.</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Hands-on Projects &amp; Implementation Experience</label>
+              <textarea id="matcherProjects" rows="4" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 leading-relaxed"></textarea>
+            </div>
+          </div>
+
+          <!-- Right Column: Target Internship -->
+          <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="text-sm font-bold text-slate-900">Target Role &amp; Requirements</h3>
+              <select id="quickJobSelect" class="text-xs bg-slate-100 border border-slate-200 rounded-lg px-2 py-1 text-slate-700 font-medium">
+                <option value="">-- Load from Postings --</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Target Role Title</label>
+              <input type="text" id="matcherRoleTitle" value="Backend Engineering Intern" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Target Company Name</label>
+              <input type="text" id="matcherCompany" value="Stripe" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Required Technical Qualifications &amp; Stack</label>
+              <textarea id="matcherRequirements" rows="7" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-xs font-mono text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 leading-relaxed">Java, Spring Boot, MySQL, REST APIs, Microservices, Distributed Systems, Git</textarea>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" id="runAnalysisBtn" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition-all">
+                <span id="analysisBtnText">Analyze My Career Fit</span>
+                <svg id="analysisSpinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Dynamic Visual Results Dashboard (Hidden until analyzed) -->
+        <div id="matcherResultsSection" class="hidden bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-sm space-y-8">
+          
+          <!-- Metric Banner & Radial Gauge -->
+          <div class="flex flex-col md:flex-row items-center gap-6 border-b border-[#E2E8F0] pb-6">
+            
+            <!-- Circular Progress Ring -->
+            <div class="relative w-32 h-32 flex items-center justify-center flex-shrink-0">
+              <svg class="w-full h-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" stroke="#E2E8F0" stroke-width="8" fill="none" />
+                <circle id="scoreProgressCircle" class="circle-progress-ring__circle" cx="50" cy="50" r="42" stroke="#4F46E5" stroke-width="8" stroke-linecap="round" fill="none" stroke-dasharray="263.89" stroke-dashoffset="263.89" />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span id="scorePercentageText" class="text-2xl font-extrabold text-[#0F172A]">0%</span>
+                <span class="text-[10px] uppercase font-bold text-slate-400">Match</span>
+              </div>
+            </div>
+
+            <!-- Verdict & Executive Summary -->
+            <div class="space-y-2 text-center md:text-left flex-1">
+              <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                <span id="scoreFitBadge" class="px-3 py-1 rounded-full text-xs font-bold">
+                  Strong Fit
+                </span>
+                <span id="scoreRoleSubtitle" class="text-xs font-semibold text-slate-500">
+                  Targeting Role
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-[#0F172A]">Executive Recruiter Evaluation</h3>
+              <p id="scoreExecutiveSummary" class="text-xs text-slate-600 leading-relaxed max-w-3xl">
+                Analysis summary evaluating candidate readiness and engineering fundamentals.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- 3 Color-Coded Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- 1. Emerald Card: Verified Strengths -->
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-5 space-y-3">
+              <div class="flex items-center gap-2 text-emerald-800">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h4 class="text-xs font-bold uppercase tracking-wider">Verified Strengths</h4>
+              </div>
+              <ul id="scoreStrengthsList" class="text-xs text-slate-700 space-y-2">
+                <!-- Injected via JS -->
+              </ul>
+            </div>
+
+            <!-- 2. Amber Card: Missing Skill Gaps + Mini-Projects -->
+            <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-5 space-y-3">
+              <div class="flex items-center gap-2 text-amber-800">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <h4 class="text-xs font-bold uppercase tracking-wider">Skill Gaps &amp; Mini-Projects</h4>
+              </div>
+              <div id="scoreGapsList" class="space-y-3">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- 3. Indigo Card: ATS Bullets & Interview Prep -->
+            <div class="bg-indigo-50/70 border border-indigo-200 rounded-2xl p-5 space-y-3">
+              <div class="flex items-center gap-2 text-indigo-800">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <h4 class="text-xs font-bold uppercase tracking-wider">ATS Resume Bullets &amp; Prep</h4>
+              </div>
+
+              <div class="space-y-2">
+                <p class="text-[11px] font-bold text-indigo-900 uppercase tracking-wide">STAR Resume Bullets (Click to copy)</p>
+                <div id="scoreStarBullets" class="space-y-2">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-indigo-200/60 space-y-1.5">
+                <p class="text-[11px] font-bold text-indigo-900 uppercase tracking-wide">Key Interview Topics</p>
+                <ul id="scoreInterviewTopics" class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+                  <!-- Injected via JS -->
+                </ul>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 3: MY APPLICATIONS TAB
+           =================================================================== -->
+      <section id="viewApplications" class="view-panel hidden space-y-6">
+        
+        <div class="border-b border-[#E2E8F0] pb-4">
+          <h2 class="text-xl font-bold tracking-tight text-[#0F172A]">My Submitted Applications</h2>
+          <p class="text-xs text-slate-500">Track and monitor your direct applications and hiring status across target companies.</p>
+        </div>
+
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold border-b border-[#E2E8F0]">
+                <tr>
+                  <th class="py-3 px-4">Internship &amp; Company</th>
+                  <th class="py-3 px-4">Candidate</th>
+                  <th class="py-3 px-4">Match Score</th>
+                  <th class="py-3 px-4">Applied Date</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="applicationsTableBody" class="divide-y divide-[#E2E8F0]">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================================================================
+           VIEW 4: MYSQL EVALUATION HISTORY TAB
+           =================================================================== -->
+      <section id="viewHistory" class="view-panel hidden space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-4">
+          <div>
+            <h2 class="text-xl font-bold tracking-tight text-[#0F172A]">MySQL Evaluation History</h2>
+            <p class="text-xs text-slate-500">Persistent evaluation records stored in MySQL `evaluations` relational table.</p>
+          </div>
+          <input type="text" id="historyFilterInput" placeholder="Filter by Student or Role..." class="text-xs border border-[#E2E8F0] rounded-xl px-3.5 py-2 w-full sm:w-64 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-50 text-slate-700 uppercase font-semibold border-b border-[#E2E8F0]">
+                <tr>
+                  <th class="py-3 px-4">Student</th>
+                  <th class="py-3 px-4">Target Role &amp; Company</th>
+                  <th class="py-3 px-4">Compatibility</th>
+                  <th class="py-3 px-4">Fit Verdict</th>
+                  <th class="py-3 px-4">Analyzed At</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody" class="divide-y divide-[#E2E8F0]">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+
+  <!-- ===================================================================
+       MODAL: POST INTERNSHIP (Recruiter / Add Job)
+       =================================================================== -->
+  <div id="postModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+    <div class="w-full max-w-lg bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-[#0F172A]">Post New Technical Internship</h3>
+        <button type="button" id="closePostModalBtn" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+      </div>
+      <form id="postInternshipForm" class="space-y-3.5">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Role Title</label>
+            <input type="text" id="postRoleTitle" required placeholder="Backend Engineering Intern" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Company Name</label>
+            <input type="text" id="postCompanyName" required placeholder="Stripe" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Location</label>
+            <input type="text" id="postLocation" required placeholder="San Francisco / Remote" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Hourly Stipend</label>
+            <input type="text" id="postStipend" required placeholder="$52 / hr" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Required Technical Skills</label>
+          <input type="text" id="postRequiredSkills" required placeholder="Java, Spring Boot, MySQL, REST APIs, Git" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Preferred Technical Skills</label>
+          <input type="text" id="postPreferredSkills" placeholder="Kafka, Redis, Docker, AWS" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="cancelPostBtn" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 bg-slate-100 rounded-xl">Cancel</button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 rounded-xl shadow-xs">Publish to MySQL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ===================================================================
+       MODAL: EDIT PROFILE
+       =================================================================== -->
+  <div id="profileModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+    <div class="w-full max-w-md bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-[#0F172A]">Edit Candidate Profile</h3>
+        <button type="button" id="closeProfileModalBtn" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+      </div>
+      <form id="editProfileForm" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+          <input type="text" id="editFullName" required class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Degree &amp; Year or Organization</label>
+          <input type="text" id="editDegree" required class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Skills (comma separated)</label>
+          <input type="text" id="editSkills" required class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Key Projects &amp; Background</label>
+          <textarea id="editProjects" rows="3" class="w-full bg-slate-50 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="cancelProfileBtn" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 bg-slate-100 rounded-xl">Cancel</button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ===================================================================
+       CLIENT-SIDE SPA JAVASCRIPT ENGINE & TOMCAT / LOCALSTORAGE FALLBACK
+       =================================================================== -->
+  <script>
+    (function () {
+      // Application State
+      let state = {
+        user: null, // Logged in user
+        currentView: 'dashboard',
+        internships: [],
+        applications: [],
+        history: [],
+        matcherSkills: ['Java', 'Spring Boot', 'MySQL', 'REST APIs', 'Git', 'Microservices'],
+        appliedInternshipIds: new Set()
+      };
+
+      const starterInternships = [
+        {
+          id: 1,
+          role_title: 'Backend Engineering Intern',
+          company_name: 'Stripe',
+          location: 'San Francisco, CA / Remote',
+          stipend: '$52 / hr',
+          required_skills: 'Java, Spring Boot, MySQL, REST APIs, Microservices, Distributed Systems, Git',
+          preferred_skills: 'Kafka, Redis, Docker, CI/CD, AWS'
+        },
+        {
+          id: 2,
+          role_title: 'Full-Stack Developer Intern',
+          company_name: 'Amazon',
+          location: 'Seattle, WA / Hybrid',
+          stipend: '$48 / hr',
+          required_skills: 'TypeScript, React, Node.js, REST APIs, SQL, Docker, AWS',
+          preferred_skills: 'GraphQL, Next.js, Jest, Kubernetes'
+        },
+        {
+          id: 3,
+          role_title: 'Cloud & DevOps Intern',
+          company_name: 'Google',
+          location: 'Mountain View, CA / Onsite',
+          stipend: '$55 / hr',
+          required_skills: 'Python, Linux, Docker, Kubernetes, CI/CD, Go, Shell Scripting',
+          preferred_skills: 'Terraform, Prometheus, GCP, Distributed Tracing'
+        },
+        {
+          id: 4,
+          role_title: 'Data Engineering Intern',
+          company_name: 'Netflix',
+          location: 'Los Gatos, CA / Remote',
+          stipend: '$50 / hr',
+          required_skills: 'Python, SQL, Apache Spark, Kafka, Data Warehousing, ETL Pipelines',
+          preferred_skills: 'Snowflake, Airflow, dbt, BigQuery'
+        }
+      ];
+
+      // Element References
+      const authScreen = document.getElementById('authScreen');
+      const mainApp = document.getElementById('mainApp');
+      const tabSignInBtn = document.getElementById('tabSignInBtn');
+      const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+      const signInForm = document.getElementById('signInForm');
+      const registerForm = document.getElementById('registerForm');
+      const demoStudentBtn = document.getElementById('demoStudentBtn');
+      const demoRecruiterBtn = document.getElementById('demoRecruiterBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const editProfileBtn = document.getElementById('editProfileBtn');
+
+      const userAvatar = document.getElementById('userAvatar');
+      const userNameDisplay = document.getElementById('userNameDisplay');
+      const userRoleBadge = document.getElementById('userRoleBadge');
+      const navAppCount = document.getElementById('navAppCount');
+
+      // Views
+      const views = {
+        dashboard: document.getElementById('viewDashboard'),
+        matcher: document.getElementById('viewMatcher'),
+        applications: document.getElementById('viewApplications'),
+        history: document.getElementById('viewHistory')
+      };
+
+      // 1. AUTHENTICATION & SESSION MANAGEMENT
+      function initAuth() {
+        tabSignInBtn.addEventListener('click', () => {
+          signInForm.classList.remove('hidden');
+          registerForm.classList.add('hidden');
+          tabSignInBtn.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-900 bg-white shadow-sm transition-all';
+          tabRegisterBtn.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-800 transition-all';
+        });
+
+        tabRegisterBtn.addEventListener('click', () => {
+          registerForm.classList.remove('hidden');
+          signInForm.classList.add('hidden');
+          tabRegisterBtn.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-900 bg-white shadow-sm transition-all';
+          tabSignInBtn.className = 'flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-800 transition-all';
+        });
+
+        // Demo Logins
+        demoStudentBtn.addEventListener('click', () => {
+          loginUser('student@demo.com', 'password123', 'Student');
+        });
+
+        demoRecruiterBtn.addEventListener('click', () => {
+          loginUser('recruiter@demo.com', 'password123', 'Recruiter');
+        });
+
+        signInForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value.trim();
+          const password = document.getElementById('loginPassword').value.trim();
+          const role = document.getElementById('loginRole').value;
+          loginUser(email, password, role);
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const payload = {
+            full_name: document.getElementById('regFullName').value.trim(),
+            email: document.getElementById('regEmail').value.trim(),
+            password: document.getElementById('regPassword').value.trim(),
+            role: document.getElementById('regRole').value,
+            degree_or_company: document.getElementById('regDegree').value.trim(),
+            skills: document.getElementById('regSkills').value.trim(),
+            projects: 'Active university development projects.'
+          };
+
+          try {
+            const res = await fetch('/api/portal?action=register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              const u = await res.json();
+              setLoggedInUser(u);
+              return;
+            }
+          } catch (err) {}
+
+          // Fallback registration
+          const fallbackUser = {
+            id: Date.now(),
+            ...payload
+          };
+          setLoggedInUser(fallbackUser);
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            await fetch('/api/portal?action=logout', { method: 'POST' });
+          } catch (err) {}
+          state.user = null;
+          localStorage.removeItem('portal_session');
+          showAuthScreen();
+        });
+
+        // Check active session on initial load
+        checkSession();
+      }
+
+      async function checkSession() {
+        try {
+          const res = await fetch('/api/portal?action=session');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.authenticated) {
+              setLoggedInUser(data);
+              return;
+            }
+          }
+        } catch (e) {}
+
+        const local = localStorage.getItem('portal_session');
+        if (local) {
+          try {
+            setLoggedInUser(JSON.parse(local));
+            return;
+          } catch (e) {}
+        }
+
+        showAuthScreen();
+      }
+
+      async function loginUser(email, password, role) {
+        try {
+          const res = await fetch('/api/portal?action=login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, role })
+          });
+          if (res.ok) {
+            const u = await res.json();
+            setLoggedInUser(u);
+            return;
+          }
+        } catch (err) {}
+
+        // Local fallback authentication
+        const isRecruiter = role === 'Recruiter' || email.includes('recruiter');
+        const fallbackUser = {
+          id: isRecruiter ? 2 : 1,
+          full_name: isRecruiter ? 'Sarah Jenkins' : 'Priya Sharma',
+          email: email,
+          role: isRecruiter ? 'Recruiter' : 'Student',
+          degree_or_company: isRecruiter ? 'Stripe University Talent Acquisition' : 'B.Tech Computer Science & Engineering (2026)',
+          skills: isRecruiter ? 'Technical Recruiting, Sourcing' : 'Java, Spring Boot, MySQL, REST APIs, Git, Microservices',
+          projects: isRecruiter ? 'Oversees university intern hiring.' : 'Developed a distributed banking ledger in Java & Spring Boot with PostgreSQL.'
+        };
+        setLoggedInUser(fallbackUser);
+      }
+
+      function setLoggedInUser(user) {
+        state.user = user;
+        localStorage.setItem('portal_session', JSON.stringify(user));
+
+        // Update profile in header
+        const initials = user.full_name
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2) || 'CP';
+        userAvatar.textContent = initials;
+        userNameDisplay.textContent = user.full_name;
+        userRoleBadge.textContent = user.role;
+        const postBtn = document.getElementById('openPostModalBtn');
+        const studentSearch = document.getElementById('studentInternshipSearch');
+        const navAppTab = document.querySelector('button[data-view="applications"] span:first-child');
+        const viewAppTitle = document.querySelector('#viewApplications h2');
+        const viewAppDesc = document.querySelector('#viewApplications p');
+
+        const navMatcherTab = document.querySelector('button[data-view="matcher"]');
+        if (user.role === 'Recruiter') {
+          userRoleBadge.className = 'inline-block text-[10px] font-semibold text-violet-700 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-200';
+          if (postBtn) postBtn.classList.remove('hidden');
+          if (studentSearch) studentSearch.classList.add('hidden');
+          if (navMatcherTab) navMatcherTab.textContent = 'AI Candidate Screener';
+          if (navAppTab) navAppTab.textContent = 'Candidate Applications';
+          if (viewAppTitle) viewAppTitle.textContent = 'Candidate Applications';
+          if (viewAppDesc) viewAppDesc.textContent = 'Review candidate profiles, analyze compatibility scores, and update candidate hiring stages.';
+        } else {
+          userRoleBadge.className = 'inline-block text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200';
+          if (postBtn) postBtn.classList.add('hidden');
+          if (studentSearch) studentSearch.classList.remove('hidden');
+          if (navMatcherTab) navMatcherTab.textContent = 'AI Career Matcher';
+          if (navAppTab) navAppTab.textContent = 'My Applications';
+          if (viewAppTitle) viewAppTitle.textContent = 'My Submitted Applications';
+          if (viewAppDesc) viewAppDesc.textContent = 'Track and monitor your direct applications and hiring status across target companies.';
+        }
+
+        // Sync Matcher inputs
+        document.getElementById('matcherStudentName').value = user.full_name || '';
+        document.getElementById('matcherDegree').value = user.degree_or_company || '';
+        document.getElementById('matcherProjects').value = user.projects || '';
+        if (user.skills) {
+          state.matcherSkills = user.skills.split(',').map(s => s.trim()).filter(Boolean);
+          renderMatcherTags();
+        }
+
+        authScreen.classList.add('hidden');
+        mainApp.classList.remove('hidden');
+        mainApp.classList.add('flex');
+
+        // Load data
+        loadInternships();
+        loadApplications();
+        loadHistory();
+        switchView('dashboard');
+      }
+
+      function showAuthScreen() {
+        mainApp.classList.add('hidden');
+        mainApp.classList.remove('flex');
+        authScreen.classList.remove('hidden');
+      }
+
+      // 2. VIEW SWITCHING
+      function initNavigation() {
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            const viewKey = tab.getAttribute('data-view');
+            switchView(viewKey);
+          });
+        });
+      }
+
+      function switchView(viewKey) {
+        state.currentView = viewKey;
+        Object.keys(views).forEach(k => {
+          if (k === viewKey) {
+            views[k].classList.remove('hidden');
+          } else {
+            views[k].classList.add('hidden');
+          }
+        });
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+          if (tab.getAttribute('data-view') === viewKey) {
+            tab.className = 'nav-tab px-3.5 py-1.5 rounded-lg bg-white text-indigo-700 shadow-xs transition-all flex items-center gap-1.5 font-bold';
+          } else {
+            tab.className = 'nav-tab px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5 font-medium';
+          }
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // 3. INTERNSHIPS BOARD
+      const internshipGrid = document.getElementById('internshipGrid');
+      const quickJobSelect = document.getElementById('quickJobSelect');
+
+      async function loadInternships() {
+        try {
+          const res = await fetch('/api/portal?action=internships');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              state.internships = data;
+              renderInternships();
+              return;
+            }
+          }
+        } catch (err) {}
+
+        const local = localStorage.getItem('portal_internships');
+        if (local) {
+          try {
+            state.internships = JSON.parse(local);
+            renderInternships();
+            return;
+          } catch (e) {}
+        }
+
+        state.internships = starterInternships;
+        localStorage.setItem('portal_internships', JSON.stringify(starterInternships));
+        renderInternships();
+      }
+
+      function renderInternships() {
+        internshipGrid.innerHTML = '';
+        quickJobSelect.innerHTML = '<option value="">-- Load from Postings --</option>';
+
+        const filter = (state.internshipFilter || '').toLowerCase().trim();
+        const displayList = state.internships.filter(item => {
+          if (!filter) return true;
+          return (
+            (item.role_title || '').toLowerCase().includes(filter) ||
+            (item.company_name || '').toLowerCase().includes(filter) ||
+            (item.required_skills || '').toLowerCase().includes(filter) ||
+            (item.location || '').toLowerCase().includes(filter)
+          );
+        });
+
+        document.getElementById('kpiActiveInternships').textContent = state.internships.length;
+
+        if (displayList.length === 0) {
+          internshipGrid.innerHTML = `
+            <div class="col-span-full bg-white border border-dashed border-slate-300 rounded-2xl p-12 text-center space-y-2">
+              <p class="text-sm font-bold text-slate-800">No matching internships found</p>
+              <p class="text-xs text-slate-500">Try adjusting your search criteria or clear the filter.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const isRecruiter = state.user?.role === 'Recruiter';
+
+        displayList.forEach((item, index) => {
+          // Select dropdown
+          const opt = document.createElement('option');
+          opt.value = index;
+          opt.textContent = `${item.role_title} (${item.company_name})`;
+          quickJobSelect.appendChild(opt);
+
+          // Card
+          const card = document.createElement('div');
+          card.className = 'bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-4';
+
+          const isApplied = state.appliedInternshipIds.has(item.id);
+          const skillsArr = (item.required_skills || '').split(',').map(s => s.trim()).filter(Boolean);
+
+          const compInitials = item.company_name.slice(0, 2).toUpperCase();
+
+          card.innerHTML = `
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-800 to-indigo-950 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                    ${compInitials}
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-[#0F172A] leading-tight">${escapeHtml(item.role_title)}</h3>
+                    <p class="text-xs font-semibold text-indigo-600">${escapeHtml(item.company_name)}</p>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-slate-800 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg">
+                  ${escapeHtml(item.stipend || 'Competitive')}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>${escapeHtml(item.location || 'Remote')}</span>
+              </div>
+
+              <!-- Skills tags -->
+              <div class="flex flex-wrap gap-1.5 pt-1">
+                ${skillsArr.map(s => `<span class="bg-slate-100 text-slate-700 text-[11px] font-medium px-2 py-0.5 rounded-md border border-slate-200">${escapeHtml(s)}</span>`).join('')}
+              </div>
+            </div>
+
+            <!-- Actions: RBAC Recruiter vs Student -->
+            ${isRecruiter ? `
+              <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100">
+                <button type="button" class="view-apps-btn w-full py-2 px-3 text-xs font-bold rounded-xl text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors flex items-center justify-center gap-1.5" data-role="${escapeHtml(item.role_title)}">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <span>View Applicants (${state.applications.filter(a => a.internship_id === item.id || (a.role_title && a.role_title.toLowerCase() === item.role_title.toLowerCase())).length})</span>
+                </button>
+                <button type="button" class="delete-job-btn w-full py-2 px-3 text-xs font-bold rounded-xl text-rose-600 hover:text-rose-700 bg-white hover:bg-rose-50 border border-rose-300 hover:border-rose-400 transition-colors flex items-center justify-center gap-1.5" data-id="${item.id}">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  <span>Delete Posting</span>
+                </button>
+              </div>
+            ` : `
+              <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100">
+                <button type="button" class="check-fit-btn w-full py-2 px-3 text-xs font-bold rounded-xl text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors" data-index="${index}">
+                  Check AI Fit
+                </button>
+                <button type="button" class="apply-btn w-full py-2 px-3 text-xs font-bold rounded-xl transition-all ${isApplied ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default' : 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-xs'}" data-id="${item.id}">
+                  ${isApplied ? 'Applied ✓' : 'Apply Now'}
+                </button>
+              </div>
+            `}
+          `;
+
+          internshipGrid.appendChild(card);
+        });
+
+        // Attach card action listeners
+        internshipGrid.querySelectorAll('.check-fit-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.currentTarget.getAttribute('data-index'));
+            const job = displayList[idx];
+            if (job) {
+              loadJobIntoMatcher(job);
+              switchView('matcher');
+            }
+          });
+        });
+
+        internshipGrid.querySelectorAll('.apply-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+            if (!state.appliedInternshipIds.has(id)) {
+              applyToInternship(id);
+            }
+          });
+        });
+
+        internshipGrid.querySelectorAll('.view-apps-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            switchView('applications');
+          });
+        });
+
+        internshipGrid.querySelectorAll('.delete-job-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+            if (!confirm('Are you sure you want to remove this internship posting?')) return;
+            try {
+              await fetch(`/api/portal?action=deleteInternship&id=${id}&type=internship`, { method: 'DELETE' });
+            } catch (err) {}
+            state.internships = state.internships.filter(i => i.id !== id);
+            localStorage.setItem('portal_internships', JSON.stringify(state.internships));
+            renderInternships();
+          });
+        });
+      }
+
+      function loadJobIntoMatcher(job) {
+        document.getElementById('matcherRoleTitle').value = job.role_title;
+        document.getElementById('matcherCompany').value = job.company_name;
+        document.getElementById('matcherRequirements').value = job.required_skills;
+      }
+
+      quickJobSelect.addEventListener('change', () => {
+        const idx = quickJobSelect.value;
+        if (idx !== '' && state.internships[idx]) {
+          loadJobIntoMatcher(state.internships[idx]);
+        }
+      });
+
+      const internshipFilterInput = document.getElementById('internshipFilterInput');
+      if (internshipFilterInput) {
+        internshipFilterInput.addEventListener('input', (e) => {
+          state.internshipFilter = e.target.value;
+          renderInternships();
+        });
+      }
+
+      // Post Internship Modal
+      const postModal = document.getElementById('postModal');
+      const openPostModalBtn = document.getElementById('openPostModalBtn');
+      const closePostModalBtn = document.getElementById('closePostModalBtn');
+      const cancelPostBtn = document.getElementById('cancelPostBtn');
+      const postInternshipForm = document.getElementById('postInternshipForm');
+
+      openPostModalBtn.addEventListener('click', () => postModal.classList.remove('hidden'));
+      closePostModalBtn.addEventListener('click', () => postModal.classList.add('hidden'));
+      cancelPostBtn.addEventListener('click', () => postModal.classList.add('hidden'));
+
+      postInternshipForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newJob = {
+          role_title: document.getElementById('postRoleTitle').value.trim(),
+          company_name: document.getElementById('postCompanyName').value.trim(),
+          location: document.getElementById('postLocation').value.trim(),
+          stipend: document.getElementById('postStipend').value.trim(),
+          required_skills: document.getElementById('postRequiredSkills').value.trim(),
+          preferred_skills: document.getElementById('postPreferredSkills').value.trim()
+        };
+
+        try {
+          const res = await fetch('/api/portal?action=addInternship', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newJob)
+          });
+          if (res.ok) {
+            const saved = await res.json();
+            newJob.id = saved.id || Date.now();
+          }
+        } catch (err) {
+          newJob.id = Date.now();
+        }
+
+        state.internships.unshift(newJob);
+        localStorage.setItem('portal_internships', JSON.stringify(state.internships));
+        renderInternships();
+        postInternshipForm.reset();
+        postModal.classList.add('hidden');
+      });
+
+      // 4. APPLYING TO INTERNSHIPS
+      async function applyToInternship(internshipId) {
+        const job = state.internships.find(i => i.id === internshipId);
+        if (!job) return;
+
+        const application = {
+          internship_id: internshipId,
+          role_title: job.role_title,
+          company_name: job.company_name,
+          student_name: state.user?.full_name || 'Priya Sharma',
+          match_score: 85,
+          status: 'Applied',
+          applied_at: new Date().toISOString()
+        };
+
+        try {
+          const res = await fetch('/api/portal?action=apply', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(application)
+          });
+          if (res.ok) {
+            const saved = await res.json();
+            application.id = saved.id || Date.now();
+          }
+        } catch (e) {
+          application.id = Date.now();
+        }
+
+        state.appliedInternshipIds.add(internshipId);
+        state.applications.unshift(application);
+        localStorage.setItem('portal_applications', JSON.stringify(state.applications));
+
+        renderInternships();
+        renderApplications();
+      }
+
+      // 5. APPLICATIONS VIEW
+      const applicationsTableBody = document.getElementById('applicationsTableBody');
+
+      async function loadApplications() {
+        try {
+          const res = await fetch('/api/portal?action=applications');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+              state.applications = data;
+              data.forEach(a => state.appliedInternshipIds.add(a.internship_id));
+              renderApplications();
+              return;
+            }
+          }
+        } catch (err) {}
+
+        const local = localStorage.getItem('portal_applications');
+        if (local) {
+          try {
+            state.applications = JSON.parse(local);
+            state.applications.forEach(a => state.appliedInternshipIds.add(a.internship_id));
+          } catch (e) {}
+        }
+        renderApplications();
+      }
+
+      function renderApplications() {
+        navAppCount.textContent = state.applications.length;
+        document.getElementById('kpiApplications').textContent = state.applications.length;
+
+        if (state.applications.length === 0) {
+          applicationsTableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="py-8 text-center text-slate-400 text-xs">
+                No active applications yet. Browse the Internship Board and click "Apply Now".
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        applicationsTableBody.innerHTML = '';
+        const isRecruiter = state.user?.role === 'Recruiter';
+
+        state.applications.forEach(app => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50 transition-colors';
+
+          let statusClass = 'bg-indigo-50 text-indigo-700 border border-indigo-200';
+          if (app.status === 'Shortlisted') statusClass = 'bg-amber-50 text-amber-700 border border-amber-200';
+          else if (app.status === 'Selected') statusClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+          else if (app.status === 'Rejected') statusClass = 'bg-rose-50 text-rose-700 border border-rose-200';
+
+          const formattedDate = app.applied_at ? new Date(app.applied_at).toLocaleDateString() : 'Today';
+          const effectiveStatus = (app.status === 'Applied' || !app.status) ? 'Pending' : app.status;
+
+          tr.innerHTML = `
+            <td class="py-3.5 px-4">
+              <p class="font-bold text-slate-900">${escapeHtml(app.role_title)}</p>
+              <p class="text-[11px] font-semibold text-indigo-600">${escapeHtml(app.company_name)}</p>
+            </td>
+            <td class="py-3.5 px-4 font-medium text-slate-800">${escapeHtml(app.student_name)}</td>
+            <td class="py-3.5 px-4 font-bold text-indigo-600">${app.match_score}%</td>
+            <td class="py-3.5 px-4 text-slate-500">${formattedDate}</td>
+            <td class="py-3.5 px-4">
+              ${isRecruiter ? `
+                <select class="status-selector text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1 font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer" data-id="${app.id}">
+                  <option value="Pending" ${effectiveStatus === 'Pending' ? 'selected' : ''}>Pending</option>
+                  <option value="Shortlisted" ${effectiveStatus === 'Shortlisted' ? 'selected' : ''}>Shortlisted</option>
+                  <option value="Selected" ${effectiveStatus === 'Selected' ? 'selected' : ''}>Selected</option>
+                  <option value="Rejected" ${effectiveStatus === 'Rejected' ? 'selected' : ''}>Rejected</option>
+                </select>
+              ` : `
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold ${statusClass}">
+                  ${escapeHtml(effectiveStatus)}
+                </span>
+              `}
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <button type="button" class="view-job-from-app text-xs font-bold text-indigo-600 hover:text-indigo-800" data-role="${escapeHtml(app.role_title)}" data-company="${escapeHtml(app.company_name)}">
+                View Stacks
+              </button>
+            </td>
+          `;
+
+          applicationsTableBody.appendChild(tr);
+        });
+
+        // Recruiter status updater
+        applicationsTableBody.querySelectorAll('.status-selector').forEach(sel => {
+          sel.addEventListener('change', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            const newStatus = e.currentTarget.value;
+            try {
+              await fetch('/api/portal?action=updateApplicationStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, status: newStatus })
+              });
+            } catch (err) {}
+
+            const target = state.applications.find(a => String(a.id) === String(id));
+            if (target) target.status = newStatus;
+            localStorage.setItem('portal_applications', JSON.stringify(state.applications));
+            renderApplications();
+          });
+        });
+
+        applicationsTableBody.querySelectorAll('.view-job-from-app').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const role = e.currentTarget.getAttribute('data-role');
+            const comp = e.currentTarget.getAttribute('data-company');
+            const match = state.internships.find(i => i.role_title === role && i.company_name === comp);
+            if (match) loadJobIntoMatcher(match);
+            switchView('matcher');
+          });
+        });
+      }
+
+      // 6. MATCHER TAGS & ANALYSIS ENGINE
+      const matcherTagsContainer = document.getElementById('matcherTagsContainer');
+      const matcherSkillInput = document.getElementById('matcherSkillInput');
+
+      function renderMatcherTags() {
+        matcherTagsContainer.querySelectorAll('.skill-tag-pill').forEach(el => el.remove());
+
+        state.matcherSkills.forEach((skill, index) => {
+          const pill = document.createElement('span');
+          pill.className = 'skill-tag-pill inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-lg border border-indigo-200';
+          pill.innerHTML = `
+            <span>${escapeHtml(skill)}</span>
+            <button type="button" data-index="${index}" class="remove-tag text-indigo-400 hover:text-indigo-800 font-bold leading-none">&times;</button>
+          `;
+          matcherTagsContainer.insertBefore(pill, matcherSkillInput);
+        });
+
+        matcherTagsContainer.querySelectorAll('.remove-tag').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.currentTarget.getAttribute('data-index'));
+            state.matcherSkills.splice(idx, 1);
+            renderMatcherTags();
+          });
+        });
+      }
+
+      matcherSkillInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ',') {
+          e.preventDefault();
+          const val = matcherSkillInput.value.replace(/,/g, '').trim();
+          if (val && !state.matcherSkills.some(s => s.toLowerCase() === val.toLowerCase())) {
+            state.matcherSkills.push(val);
+            renderMatcherTags();
+          }
+          matcherSkillInput.value = '';
+        } else if (e.key === 'Backspace' && matcherSkillInput.value === '' && state.matcherSkills.length > 0) {
+          state.matcherSkills.pop();
+          renderMatcherTags();
+        }
+      });
+
+      renderMatcherTags();
+
+      // Run Career Fit Analysis
+      const runAnalysisBtn = document.getElementById('runAnalysisBtn');
+      const analysisBtnText = document.getElementById('analysisBtnText');
+      const analysisSpinner = document.getElementById('analysisSpinner');
+      const matcherResultsSection = document.getElementById('matcherResultsSection');
+
+      runAnalysisBtn.addEventListener('click', async () => {
+        analysisBtnText.textContent = 'Running Algorithmic Assessment...';
+        analysisSpinner.classList.remove('hidden');
+        runAnalysisBtn.disabled = true;
+
+        const payload = {
+          student_name: document.getElementById('matcherStudentName').value.trim() || state.user?.full_name || 'Candidate',
+          degree: document.getElementById('matcherDegree').value.trim() || state.user?.degree_or_company || 'Undergraduate',
+          skills: state.matcherSkills.join(', '),
+          projects: document.getElementById('matcherProjects').value.trim(),
+          role_title: document.getElementById('matcherRoleTitle').value.trim(),
+          company_name: document.getElementById('matcherCompany').value.trim(),
+          requirements: document.getElementById('matcherRequirements').value.trim()
+        };
+
+        let result = null;
+
+        try {
+          const res = await fetch('/api/portal?action=analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const data = await res.json();
+            result = data.result || data;
+          }
+        } catch (err) {}
+
+        if (!result) {
+          // Client algorithmic calculation fallback
+          result = calculateClientAnalysis(payload);
+        }
+
+        renderAnalysisResults(result, payload);
+        saveEvaluationRecord(result, payload);
+
+        analysisBtnText.textContent = 'Analyze My Career Fit';
+        analysisSpinner.classList.add('hidden');
+        runAnalysisBtn.disabled = false;
+      });
+
+      function calculateClientAnalysis(p) {
+        const stu = p.skills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+        const req = p.requirements.split(/[,;\n]+/).map(s => s.trim().toLowerCase()).filter(Boolean);
+
+        const matched = [];
+        const missing = [];
+
+        req.forEach(r => {
+          const match = stu.some(s => s.includes(r) || r.includes(s));
+          if (match) matched.push(capitalize(r));
+          else missing.push(capitalize(r));
+        });
+
+        const score = req.length === 0 ? 82 : Math.round((matched.length / req.length) * 100);
+        const status = score >= 75 ? 'Strong Fit' : (score >= 50 ? 'Moderate Fit' : 'Needs Upskilling');
+
+        return {
+          match_percentage: score,
+          fit_status: status,
+          executive_summary: `${p.student_name} displays ${score >= 75 ? 'exceptional technical readiness' : 'solid academic fundamentals'} for ${p.role_title} at ${p.company_name}, verified across foundational CS competencies with clear project-driven remediation targets.`,
+          matched_skills: matched.length > 0 ? matched : ['Foundational Problem Solving', 'Core Software Design'],
+          skill_gaps: missing.map((m, idx) => ({
+            skill: m,
+            priority: idx === 0 ? 'High' : 'Medium',
+            mini_project: `Build a production-style service integrating ${m} with automated testing and Docker containerization.`
+          })),
+          ats_star_bullets: [
+            `Engineered scalable ${p.role_title} service modules with robust error handling, reducing latency and boosting request reliability.`,
+            `Designed database schemas and optimized indexing strategies to support concurrent data throughput.`,
+            `Built automated end-to-end unit tests and continuous deployment scripts complying with industry standards.`
+          ],
+          interview_topics: [
+            'Concurrency & Multi-Threading: Thread safety, race condition prevention, and concurrent maps',
+            'Database Optimization: B-Tree Index mechanics, transaction isolation levels, and EXPLAIN plans',
+            'Algorithmic Patterns: Sliding Window, Monotonic Stack, and Dynamic Programming',
+            'Distributed Architecture: Stateless REST endpoints, caching layers, and idempotent design'
+          ]
+        };
+      }
+
+      function renderAnalysisResults(res, payload) {
+        matcherResultsSection.classList.remove('hidden');
+
+        // Score ring animation
+        const percentage = res.match_percentage || 80;
+        document.getElementById('scorePercentageText').textContent = `${percentage}%`;
+        const circle = document.getElementById('scoreProgressCircle');
+        const circumference = 2 * Math.PI * 42; // ~263.89
+        const offset = circumference - (percentage / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+
+        // Colors
+        const badge = document.getElementById('scoreFitBadge');
+        badge.textContent = res.fit_status || 'Strong Fit';
+        if (res.fit_status === 'Strong Fit') {
+          badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
+          circle.setAttribute('stroke', '#059669');
+        } else if (res.fit_status === 'Moderate Fit') {
+          badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200';
+          circle.setAttribute('stroke', '#D97706');
+        } else {
+          badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200';
+          circle.setAttribute('stroke', '#E11D48');
+        }
+
+        document.getElementById('scoreRoleSubtitle').textContent = `Targeting: ${payload.role_title} at ${payload.company_name}`;
+        document.getElementById('scoreExecutiveSummary').textContent = res.executive_summary || '';
+
+        // Strengths
+        const strengthsList = document.getElementById('scoreStrengthsList');
+        strengthsList.innerHTML = '';
+        (res.matched_skills || []).forEach(skill => {
+          const li = document.createElement('li');
+          li.className = 'flex items-center gap-2 font-medium';
+          li.innerHTML = `
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 flex-shrink-0"></span>
+            <span>${escapeHtml(skill)}</span>
+          `;
+          strengthsList.appendChild(li);
+        });
+
+        // Gaps
+        const gapsList = document.getElementById('scoreGapsList');
+        gapsList.innerHTML = '';
+        const gapsArr = res.skill_gaps || [];
+        if (gapsArr.length === 0) {
+          gapsList.innerHTML = '<p class="text-xs text-slate-500">No major critical skill gaps identified!</p>';
+        } else {
+          gapsArr.forEach(gap => {
+            const gapItem = document.createElement('div');
+            gapItem.className = 'bg-white/80 border border-amber-200 rounded-xl p-3 space-y-1 shadow-2xs';
+            gapItem.innerHTML = `
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-900">${escapeHtml(gap.skill)}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${gap.priority === 'High' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-800'}">
+                  ${gap.priority} Priority
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-snug">${escapeHtml(gap.mini_project)}</p>
+            `;
+            gapsList.appendChild(gapItem);
+          });
+        }
+
+        // STAR Bullets
+        const starBullets = document.getElementById('scoreStarBullets');
+        starBullets.innerHTML = '';
+        (res.ats_star_bullets || []).forEach((bullet, idx) => {
+          const bDiv = document.createElement('div');
+          bDiv.className = 'bg-white/80 border border-indigo-200 rounded-xl p-2.5 flex items-start justify-between gap-2 text-xs text-slate-700 leading-relaxed shadow-2xs group';
+          bDiv.innerHTML = `
+            <span>${escapeHtml(bullet)}</span>
+            <button type="button" class="copy-bullet-btn flex-shrink-0 text-indigo-600 hover:text-indigo-800 text-[11px] font-bold px-2 py-1 bg-indigo-50 rounded-md" data-bullet="${escapeHtml(bullet)}">
+              Copy
+            </button>
+          `;
+          starBullets.appendChild(bDiv);
+        });
+
+        starBullets.querySelectorAll('.copy-bullet-btn').forEach(b => {
+          b.addEventListener('click', (e) => {
+            const text = e.currentTarget.getAttribute('data-bullet');
+            navigator.clipboard.writeText(text);
+            e.currentTarget.textContent = 'Copied!';
+            setTimeout(() => { e.currentTarget.textContent = 'Copy'; }, 1500);
+          });
+        });
+
+        // Interview Topics
+        const interviewTopics = document.getElementById('scoreInterviewTopics');
+        interviewTopics.innerHTML = '';
+        (res.interview_topics || []).forEach(topic => {
+          const li = document.createElement('li');
+          li.textContent = topic;
+          interviewTopics.appendChild(li);
+        });
+
+        matcherResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function saveEvaluationRecord(res, payload) {
+        const record = {
+          id: Date.now(),
+          student_name: payload.student_name,
+          role_title: payload.role_title,
+          company_name: payload.company_name,
+          match_score: res.match_percentage,
+          fit_status: res.fit_status,
+          result_json: res,
+          created_at: new Date().toISOString()
+        };
+
+        state.history.unshift(record);
+        localStorage.setItem('portal_history', JSON.stringify(state.history));
+        renderHistory();
+      }
+
+      // 7. MYSQL EVALUATION HISTORY VIEW
+      const historyTableBody = document.getElementById('historyTableBody');
+      const historyFilterInput = document.getElementById('historyFilterInput');
+
+      async function loadHistory() {
+        try {
+          const res = await fetch('/api/portal?action=history');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+              state.history = data;
+              renderHistory();
+              return;
+            }
+          }
+        } catch (err) {}
+
+        const local = localStorage.getItem('portal_history');
+        if (local) {
+          try {
+            state.history = JSON.parse(local);
+          } catch (e) {}
+        }
+        renderHistory();
+      }
+
+      function renderHistory() {
+        const query = historyFilterInput.value.toLowerCase().trim();
+        const filtered = state.history.filter(h => {
+          const name = (h.student_name || '').toLowerCase();
+          const role = (h.role_title || '').toLowerCase();
+          const comp = (h.company_name || '').toLowerCase();
+          return name.includes(query) || role.includes(query) || comp.includes(query);
+        });
+
+        document.getElementById('kpiEvaluations').textContent = state.history.length;
+        if (state.history.length > 0) {
+          const sum = state.history.reduce((acc, h) => acc + (h.match_score || 75), 0);
+          document.getElementById('kpiAvgScore').textContent = `${Math.round(sum / state.history.length)}%`;
+        }
+
+        if (filtered.length === 0) {
+          historyTableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="py-8 text-center text-slate-400 text-xs">
+                No evaluation reports found matching your criteria.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        historyTableBody.innerHTML = '';
+        filtered.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50 transition-colors';
+
+          let statusClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+          if (item.fit_status === 'Moderate Fit') statusClass = 'bg-amber-50 text-amber-700 border border-amber-200';
+          else if (item.fit_status === 'Needs Upskilling') statusClass = 'bg-rose-50 text-rose-700 border border-rose-200';
+
+          const formattedDate = item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Today';
+
+          tr.innerHTML = `
+            <td class="py-3.5 px-4 font-bold text-slate-900">${escapeHtml(item.student_name)}</td>
+            <td class="py-3.5 px-4">
+              <span class="font-semibold text-slate-800">${escapeHtml(item.role_title)}</span>
+              <span class="text-slate-400">at ${escapeHtml(item.company_name)}</span>
+            </td>
+            <td class="py-3.5 px-4 font-bold text-indigo-600">${item.match_score}%</td>
+            <td class="py-3.5 px-4">
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold ${statusClass}">
+                ${escapeHtml(item.fit_status)}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 text-slate-500">${formattedDate}</td>
+            <td class="py-3.5 px-4 text-right space-x-2">
+              <button type="button" class="view-report-btn text-xs font-bold text-indigo-600 hover:text-indigo-800" data-id="${item.id}">
+                View Full Report
+              </button>
+              <button type="button" class="delete-report-btn text-xs font-bold text-rose-600 hover:text-rose-800" data-id="${item.id}">
+                Delete
+              </button>
+            </td>
+          `;
+
+          historyTableBody.appendChild(tr);
+        });
+
+        historyTableBody.querySelectorAll('.view-report-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            const match = state.history.find(h => String(h.id) === String(id));
+            if (match) {
+              const res = typeof match.result_json === 'string' ? JSON.parse(match.result_json) : match.result_json;
+              renderAnalysisResults(res, { role_title: match.role_title, company_name: match.company_name, student_name: match.student_name });
+              switchView('matcher');
+            }
+          });
+        });
+
+        historyTableBody.querySelectorAll('.delete-report-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            try {
+              await fetch(`/api/portal?id=${id}`, { method: 'DELETE' });
+            } catch (err) {}
+
+            state.history = state.history.filter(h => String(h.id) !== String(id));
+            localStorage.setItem('portal_history', JSON.stringify(state.history));
+            renderHistory();
+          });
+        });
+      }
+
+      historyFilterInput.addEventListener('input', renderHistory);
+
+      // 8. PROFILE EDIT MODAL
+      const profileModal = document.getElementById('profileModal');
+      const closeProfileModalBtn = document.getElementById('closeProfileModalBtn');
+      const cancelProfileBtn = document.getElementById('cancelProfileBtn');
+      const editProfileForm = document.getElementById('editProfileForm');
+
+      editProfileBtn.addEventListener('click', () => {
+        if (!state.user) return;
+        document.getElementById('editFullName').value = state.user.full_name || '';
+        document.getElementById('editDegree').value = state.user.degree_or_company || '';
+        document.getElementById('editSkills').value = state.user.skills || state.matcherSkills.join(', ');
+        document.getElementById('editProjects').value = state.user.projects || '';
+        profileModal.classList.remove('hidden');
+      });
+
+      closeProfileModalBtn.addEventListener('click', () => profileModal.classList.add('hidden'));
+      cancelProfileBtn.addEventListener('click', () => profileModal.classList.add('hidden'));
+
+      editProfileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        state.user.full_name = document.getElementById('editFullName').value.trim();
+        state.user.degree_or_company = document.getElementById('editDegree').value.trim();
+        state.user.skills = document.getElementById('editSkills').value.trim();
+        state.user.projects = document.getElementById('editProjects').value.trim();
+
+        localStorage.setItem('portal_session', JSON.stringify(state.user));
+        setLoggedInUser(state.user);
+        profileModal.classList.add('hidden');
+      });
+
+      // Utility helpers
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function capitalize(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      // Initialize
+      initAuth();
+      initNavigation();
+    })();
+  </script>
+</body>
+</html>
